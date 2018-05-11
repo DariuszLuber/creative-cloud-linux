@@ -11,8 +11,8 @@
 [ "$PLAYONLINUX" = "" ] && exit 0
 source "$PLAYONLINUX/lib/sources"
 
-PREFIX="CreativeCloud2018"
-WINEVERSION="2.20-staging"
+PREFIX="CreativeCloudDev"
+WINEVERSION="3.7"
 TITLE="Adobe Creative Cloud"
 EDITOR="Adobe Systems Inc."
 GAME_URL="http://www.adobe.com"
@@ -28,6 +28,7 @@ POL_Debug_Init
 POL_SetupWindow_presentation "$TITLE" "$EDITOR" "$GAME_URL" "$AUTHOR" "$PREFIX"
 
 # Create prefix and temporary download folder
+POL_System_SetArch "amd64"
 POL_Wine_SelectPrefix "$PREFIX"
 POL_Wine_PrefixCreate "$WINEVERSION"
 POL_System_TmpCreate "AppManagerTmp"
