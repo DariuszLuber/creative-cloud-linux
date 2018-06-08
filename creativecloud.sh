@@ -12,7 +12,7 @@
 source "$PLAYONLINUX/lib/sources"
 
 PREFIX="CreativeCloudDev"
-WINEVERSION="3.7"
+WINEVERSION="3.9"
 TITLE="Adobe Creative Cloud"
 EDITOR="Adobe Systems Inc."
 GAME_URL="http://www.adobe.com"
@@ -41,14 +41,16 @@ cd "$POL_System_TmpDir"
 # Use winetricks, since the POL_corefonts version does not work with the installer
 POL_Download_Resource  "https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks"
 POL_SetupWindow_wait "Please wait while winetricks is installed... (this might take a few minutes)" "$TITLE"
-chmod +x winetricks 
-./winetricks atmlib corefonts fontsmooth=rgb
+chmod +x winetricks
+./winetricks atmlib corefonts wininet winhttp gecko fontsmooth=rgb
 
 # Get the installer
-POL_SetupWindow_wait "Installation in progress..." "$TITLE"
+POL_SetupWindow_wait "Download in progress..." "$TITLE"
 cd "$POL_System_TmpDir"
-POL_Download "https://ccmdls.adobe.com/AdobeProducts/KCCC/1/win32/CreativeCloudSet-Up.exe"
-INSTALLER="$POL_System_TmpDir/CreativeCloudSet-Up.exe"
+POL_Download "http://ccmdl.adobe.com/AdobeProducts/KCCC/1/win32/ACCCx4_5_0_331.zip"
+POL_SetupWindow_wait "Please wait while the installer is extracted..." "$TITLE"
+unzip *.zip
+INSTALLER="$POL_System_TmpDir/Set-up.exe"
   
 # Run the installer
 POL_Wine_WaitBefore "$TITLE"
