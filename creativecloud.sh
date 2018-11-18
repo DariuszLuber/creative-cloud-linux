@@ -12,7 +12,7 @@
 source "$PLAYONLINUX/lib/sources"
 
 PREFIX="CreativeCloudDev"
-WINEVERSION="3.13"
+WINEVERSION="3.20"
 TITLE="Adobe Creative Cloud"
 EDITOR="Adobe Systems Inc."
 GAME_URL="http://www.adobe.com"
@@ -27,6 +27,9 @@ POL_Debug_Init
 # Presentation
 POL_SetupWindow_presentation "$TITLE" "$EDITOR" "$GAME_URL" "$AUTHOR" "$PREFIX"
 
+# Explain Linux dependencies
+POL_SetupWindow_message "$(eval_gettext 'Note: Please make sure that the winbind package is installed on your computer. It is required for Adobe Creative Cloud to connect to the internet, and it cannot be automatically installed by PlayOnLinux.\n\nThis is the command for Ubuntu:\nsudo apt-get install winbind\n\nWhen you have installed it, click Next.')" "$TITLE"
+
 # Create prefix and temporary download folder
 POL_Wine_SelectPrefix "$PREFIX"
 POL_Wine_PrefixCreate "$WINEVERSION"
@@ -40,11 +43,17 @@ POL_Download_Resource  "https://raw.githubusercontent.com/Winetricks/winetricks/
 POL_SetupWindow_wait "Please wait while winetricks is installed... (this might take a few minutes)" "$TITLE"
 chmod +x winetricks
 ./winetricks atmlib corefonts fontsmooth=rgb gdiplus vcrun2008 vcrun2010 vcrun2012 vcrun2013 vcrun2015 atmlib msxml3 msxml6 gdiplus wininet winhttp ie8
-Set_OS "win7"
 
 # Get the installer
-cd "$POL_System_TmpDir"
-POL_Download "http://ccmdl.adobe.com/AdobeProducts/KCCC/1/win32/ACCCx4_6_0_391.zip"
+POL_SetupWindow_InstallMethod "LOCAL,DOWNLOAD"
+if [ "$INSTALL_METHOD" = "LOCAL" ]; then
+	POL_SetupWindow_browse "Please select the Adobe Creative Cloud offline installer ZIP file."
+	cp "$APP_ANSWER" "$POL_System_TmpDir"
+	cd "$POL_System_TmpDir"
+elif [ "$INSTALL_METHOD" = "DOWNLOAD" ]; then
+	cd "$POL_System_TmpDir"
+	POL_Download "http://ccmdl.adobe.com/AdobeProducts/KCCC/1/win32/ACCCx4_6_0_391.zip"
+fi
 POL_SetupWindow_wait "Please wait while the installer is extracted..." "$TITLE"
 unzip *.zip
 INSTALLER="$POL_System_TmpDir/Set-up.exe"
